@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NanoLancer - Discover Free AI Tools & Courses</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.3.2/pixi.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'orbitron': ['Orbitron', 'sans-serif'],
+                        'inter': ['Inter', 'sans-serif']
+                    },
+                    colors: {
+                        'space-blue': '#0B1426',
+                        'cosmic-purple': '#2D1B69',
+                        'electric-cyan': '#00D4FF',
+                        'neon-green': '#39FF14',
+                        'charcoal': '#1A1A1A'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Aurora Background Animation */
+        .aurora-bg {
+            background: linear-gradient(45deg, #0B1426, #2D1B69, #0B1426);
+            background-size: 400% 400%;
+            animation: aurora 15s ease infinite;
+        }
+        
+        @keyframes aurora {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Neon Glow Effects */
+        .neon-glow {
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+        
+        .neon-text {
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
+        }
+        
+        /* 3D Hover Effects */
+        .card-3d {
+            transform-style: preserve-3d;
+            transition: all 0.3s ease;
+        }
+        
+        .card-3d:hover {
+            transform: rotateY(5deg) rotateX(5deg) translateZ(20px);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.3);
+        }
+        
+        /* Loading Animation */
+        .loading-shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        /* Scroll Animations */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+        
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-space-blue text-white font-inter overflow-x-hidden">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-r from-electric-cyan to-neon-green rounded-lg flex items-center justify-center">
+                        <span class="font-orbitron font-bold text-space-blue">NL</span>
+                    </div>
+                    <span class="font-orbitron font-bold text-xl neon-text">NanoLancer</span>
+                </div>
+                
+                <!-- Navigation Links -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#" class="text-white hover:text-electric-cyan transition-colors font-medium">Home</a>
+                    <a href="courses.html" class="text-white hover:text-electric-cyan transition-colors font-medium">Courses</a>
+                    <a href="dashboard.html" class="text-white hover:text-electric-cyan transition-colors font-medium">Dashboard</a>
+                    <a href="admin.html" class="text-white hover:text-electric-cyan transition-colors font-medium">Admin</a>
+                </div>
+                
+                <!-- Auth Buttons -->
+                <div class="flex items-center space-x-4">
+                    <button id="loginBtn" class="px-4 py-2 text-white hover:text-electric-cyan transition-colors font-medium">
+                        Login
+                    </button>
+                    <button id="signupBtn" class="px-6 py-2 bg-gradient-to-r from-electric-cyan to-neon-green text-space-blue rounded-lg font-semibold hover:shadow-lg transition-all">
+                        Sign Up
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center justify-center aurora-bg">
+        <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+        
+        <!-- Hero Background Image -->
+        <div class="absolute inset-0">
+            <img src="resources/hero-bg.jpg" alt="AI Laboratory" class="w-full h-full object-cover opacity-30">
+        </div>
+        
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="font-orbitron font-black text-5xl md:text-7xl lg:text-8xl mb-6 neon-text">
+                <span class="block">Discover</span>
+                <span class="block bg-gradient-to-r from-electric-cyan to-neon-green bg-clip-text text-transparent">Free AI Tools</span>
+            </h1>
+            
+            <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+                Explore the world's largest directory of free AI tools and courses. 
+                From machine learning platforms to creative AI assistants, find everything you need to build, learn, and innovate.
+            </p>
+            
+            <!-- Search Bar -->
+            <div class="max-w-2xl mx-auto mb-12">
+                <div class="relative">
+                    <input 
+                        type="text" 
+                        id="heroSearch"
+                        placeholder="Search AI tools, courses, or categories..."
+                        class="w-full px-6 py-4 bg-white bg-opacity-10 backdrop-blur-md border border-white border-opacity-20 rounded-full text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-electric-cyan text-lg"
+                    >
+                    <button class="absolute right-2 top-2 p-3 bg-gradient-to-r from-electric-cyan to-neon-green rounded-full text-space-blue hover:shadow-lg transition-all">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- CTA Buttons -->
+            <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                <button id="exploreToolsBtn" class="px-8 py-4 bg-gradient-to-r from-electric-cyan to-neon-green text-space-blue rounded-full font-bold text-lg hover:shadow-2xl transition-all transform hover:scale-105">
+                    Explore Tools
+                </button>
+                <button id="startLearningBtn" class="px-8 py-4 border-2 border-electric-cyan text-electric-cyan rounded-full font-bold text-lg hover:bg-electric-cyan hover:text-space-blue transition-all">
+                    Start Learning
+                </button>
+            </div>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <svg class="w-6 h-6 text-electric-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- Tools Section -->
+    <section id="toolsSection" class="py-20 bg-gradient-to-b from-space-blue to-charcoal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 fade-in-up">
+                <h2 class="font-orbitron font-bold text-4xl md:text-5xl mb-6 neon-text">
+                    Featured AI Tools
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Discover cutting-edge AI tools from around the world. Filter by category, 
+                    license, or region to find exactly what you need.
+                </p>
+            </div>
+            
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Filter Sidebar -->
+                <div class="lg:w-1/4">
+                    <div class="glass rounded-2xl p-6 sticky top-24">
+                        <h3 class="font-orbitron font-bold text-xl mb-6 text-electric-cyan">Filters</h3>
+                        
+                        <!-- Category Filter -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-semibold mb-3 text-gray-300">Category</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="category-filter mr-3 text-electric-cyan" value="nlp" checked>
+                                    <span class="text-sm">Natural Language Processing</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="category-filter mr-3 text-electric-cyan" value="vision" checked>
+                                    <span class="text-sm">Computer Vision</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="category-filter mr-3 text-electric-cyan" value="ml" checked>
+                                    <span class="text-sm">Machine Learning</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="category-filter mr-3 text-electric-cyan" value="dev" checked>
+                                    <span class="text-sm">Development Tools</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="category-filter mr-3 text-electric-cyan" value="data" checked>
+                                    <span class="text-sm">Data Science</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="category-filter mr-3 text-electric-cyan" value="prompt" checked>
+                                    <span class="text-sm">Prompt Engineering</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- License Filter -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-semibold mb-3 text-gray-300">License</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="license-filter mr-3 text-electric-cyan" value="free" checked>
+                                    <span class="text-sm">Free</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="license-filter mr-3 text-electric-cyan" value="freemium" checked>
+                                    <span class="text-sm">Freemium</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="license-filter mr-3 text-electric-cyan" value="opensource" checked>
+                                    <span class="text-sm">Open Source</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Clear Filters -->
+                        <button id="clearFilters" class="w-full py-2 px-4 border border-electric-cyan text-electric-cyan rounded-lg hover:bg-electric-cyan hover:text-space-blue transition-all text-sm font-medium">
+                            Clear All Filters
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Tools Grid -->
+                <div class="lg:w-3/4">
+                    <!-- Search Bar -->
+                    <div class="mb-8">
+                        <input 
+                            type="text" 
+                            id="toolsSearch"
+                            placeholder="Search tools by name, description, or tags..."
+                            class="w-full px-6 py-4 bg-white bg-opacity-5 backdrop-blur-md border border-white border-opacity-20 rounded-2xl text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-electric-cyan"
+                        >
+                    </div>
+                    
+                    <!-- Tools Grid -->
+                    <div id="toolsGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+                        <!-- Tools will be dynamically loaded here -->
+                    </div>
+                    
+                    <!-- Loading Indicator -->
+                    <div id="loadingIndicator" class="text-center py-8 hidden">
+                        <div class="inline-block w-8 h-8 border-4 border-electric-cyan border-t-transparent rounded-full animate-spin"></div>
+                        <p class="mt-4 text-gray-300">Loading more tools...</p>
+                    </div>
+                    
+                    <!-- Load More Button -->
+                    <div class="text-center">
+                        <button id="loadMoreBtn" class="px-8 py-4 bg-gradient-to-r from-electric-cyan to-neon-green text-space-blue rounded-full font-bold hover:shadow-2xl transition-all transform hover:scale-105">
+                            Fetch 20 More Tools
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Courses Section -->
+    <section class="py-20 bg-charcoal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 fade-in-up">
+                <h2 class="font-orbitron font-bold text-4xl md:text-5xl mb-6 neon-text">
+                    Featured Courses
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Learn from the best AI educators and institutions. 
+                    All courses are carefully curated and completely free.
+                </p>
+            </div>
+            
+            <div class="splide" id="coursesCarousel">
+                <div class="splide__track">
+                    <ul class="splide__list" id="coursesList">
+                        <!-- Courses will be dynamically loaded here -->
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <a href="courses.html" class="inline-block px-8 py-4 border-2 border-electric-cyan text-electric-cyan rounded-full font-bold hover:bg-electric-cyan hover:text-space-blue transition-all">
+                    View All Courses
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="py-20 bg-gradient-to-b from-charcoal to-space-blue">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="fade-in-up">
+                    <h2 class="font-orbitron font-bold text-4xl md:text-5xl mb-6 neon-text">
+                        About NanoLancer
+                    </h2>
+                    <p class="text-lg text-gray-300 mb-6 leading-relaxed">
+                        NanoLancer is the world's most comprehensive directory of free AI tools and courses. 
+                        We believe that artificial intelligence should be accessible to everyone, regardless of their background or resources.
+                    </p>
+                    <p class="text-lg text-gray-300 mb-8 leading-relaxed">
+                        Our platform connects learners and developers with cutting-edge AI tools, educational resources, 
+                        and a supportive community that's shaping the future of technology.
+                    </p>
+                    
+                    <!-- Stats -->
+                    <div class="grid grid-cols-3 gap-6">
+                        <div class="text-center">
+                            <div class="text-3xl font-orbitron font-bold text-electric-cyan mb-2" id="toolsCount">500+</div>
+                            <div class="text-sm text-gray-400">AI Tools</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-orbitron font-bold text-neon-green mb-2" id="coursesCount">100+</div>
+                            <div class="text-sm text-gray-400">Courses</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-3xl font-orbitron font-bold text-electric-cyan mb-2" id="usersCount">10K+</div>
+                            <div class="text-sm text-gray-400">Users</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="fade-in-up">
+                    <div class="glass rounded-2xl p-8">
+                        <h3 class="font-orbitron font-bold text-2xl mb-6 text-electric-cyan">Why Choose NanoLancer?</h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start space-x-3">
+                                <div class="w-6 h-6 bg-gradient-to-r from-electric-cyan to-neon-green rounded-full flex items-center justify-center mt-1">
+                                    <svg class="w-4 h-4 text-space-blue" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-gray-300">Completely free access to all tools and courses</span>
+                            </li>
+                            <li class="flex items-start space-x-3">
+                                <div class="w-6 h-6 bg-gradient-to-r from-electric-cyan to-neon-green rounded-full flex items-center justify-center mt-1">
+                                    <svg class="w-4 h-4 text-space-blue" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-gray-300">Curated content from top educators and developers</span>
+                            </li>
+                            <li class="flex items-start space-x-3">
+                                <div class="w-6 h-6 bg-gradient-to-r from-electric-cyan to-neon-green rounded-full flex items-center justify-center mt-1">
+                                    <svg class="w-4 h-4 text-space-blue" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-gray-300">Active community of AI enthusiasts and experts</span>
+                            </li>
+                            <li class="flex items-start space-x-3">
+                                <div class="w-6 h-6 bg-gradient-to-r from-electric-cyan to-neon-green rounded-full flex items-center justify-center mt-1">
+                                    <svg class="w-4 h-4 text-space-blue" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-gray-300">Regular updates with the latest AI innovations</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-charcoal py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="flex items-center justify-center space-x-3 mb-6">
+                    <div class="w-10 h-10 bg-gradient-to-r from-electric-cyan to-neon-green rounded-lg flex items-center justify-center">
+                        <span class="font-orbitron font-bold text-space-blue">NL</span>
+                    </div>
+                    <span class="font-orbitron font-bold text-2xl neon-text">NanoLancer</span>
+                </div>
+                
+                <p class="text-gray-400 mb-6 max-w-2xl mx-auto">
+                    Empowering the next generation of AI innovators with free tools, courses, and resources.
+                </p>
+                
+                <div class="flex justify-center space-x-6 mb-8">
+                    <a href="#" class="text-gray-400 hover:text-electric-cyan transition-colors">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-electric-cyan transition-colors">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-electric-cyan transition-colors">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        </svg>
+                    </a>
+                </div>
+                
+                <p class="text-sm text-gray-500">
+                    © 2024 NanoLancer. All rights reserved. Built with passion for the AI community.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="database.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>

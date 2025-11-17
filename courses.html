@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses - NanoLancer</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Core Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'orbitron': ['Orbitron', 'sans-serif'],
+                        'inter': ['Inter', 'sans-serif']
+                    },
+                    colors: {
+                        'space-blue': '#0B1426',
+                        'cosmic-purple': '#2D1B69',
+                        'electric-cyan': '#00D4FF',
+                        'neon-green': '#39FF14',
+                        'charcoal': '#1A1A1A'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Aurora Background Animation */
+        .aurora-bg {
+            background: linear-gradient(45deg, #0B1426, #2D1B69, #0B1426);
+            background-size: 400% 400%;
+            animation: aurora 15s ease infinite;
+        }
+        
+        @keyframes aurora {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Neon Glow Effects */
+        .neon-glow {
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+        
+        .neon-text {
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
+        }
+        
+        /* 3D Hover Effects */
+        .card-3d {
+            transform-style: preserve-3d;
+            transition: all 0.3s ease;
+        }
+        
+        .card-3d:hover {
+            transform: rotateY(5deg) rotateX(5deg) translateZ(20px);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.3);
+        }
+        
+        /* Scroll Animations */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+        
+        .fade-in-up.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-space-blue text-white font-inter overflow-x-hidden">
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-gradient-to-r from-electric-cyan to-neon-green rounded-lg flex items-center justify-center">
+                        <span class="font-orbitron font-bold text-space-blue">NL</span>
+                    </div>
+                    <span class="font-orbitron font-bold text-xl neon-text">NanoLancer</span>
+                </div>
+                
+                <!-- Navigation Links -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="text-white hover:text-electric-cyan transition-colors font-medium">Home</a>
+                    <a href="#" class="text-electric-cyan font-medium">Courses</a>
+                    <a href="dashboard.html" class="text-white hover:text-electric-cyan transition-colors font-medium">Dashboard</a>
+                    <a href="admin.html" class="text-white hover:text-electric-cyan transition-colors font-medium">Admin</a>
+                </div>
+                
+                <!-- Auth Buttons -->
+                <div class="flex items-center space-x-4">
+                    <button id="loginBtn" class="px-4 py-2 text-white hover:text-electric-cyan transition-colors font-medium">
+                        Login
+                    </button>
+                    <button id="signupBtn" class="px-6 py-2 bg-gradient-to-r from-electric-cyan to-neon-green text-space-blue rounded-lg font-semibold hover:shadow-lg transition-all">
+                        Sign Up
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-24 pb-16 aurora-bg">
+        <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+        
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="font-orbitron font-black text-4xl md:text-6xl lg:text-7xl mb-6 neon-text">
+                AI Learning
+                <span class="block bg-gradient-to-r from-electric-cyan to-neon-green bg-clip-text text-transparent">
+                    Made Simple
+                </span>
+            </h1>
+            
+            <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+                Master artificial intelligence with our curated collection of free courses from top universities and industry leaders.
+            </p>
+            
+            <!-- Search Bar -->
+            <div class="max-w-2xl mx-auto">
+                <div class="relative">
+                    <input 
+                        type="text" 
+                        id="coursesSearch"
+                        placeholder="Search courses by topic, provider, or skill level..."
+                        class="w-full px-6 py-4 bg-white bg-opacity-10 backdrop-blur-md border border-white border-opacity-20 rounded-full text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-electric-cyan text-lg"
+                    >
+                    <button class="absolute right-2 top-2 p-3 bg-gradient-to-r from-electric-cyan to-neon-green rounded-full text-space-blue hover:shadow-lg transition-all">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Course Stats -->
+    <section class="py-12 bg-charcoal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div class="fade-in-up">
+                    <div class="text-3xl font-orbitron font-bold text-electric-cyan mb-2">100+</div>
+                    <div class="text-sm text-gray-400">Free Courses</div>
+                </div>
+                <div class="fade-in-up">
+                    <div class="text-3xl font-orbitron font-bold text-neon-green mb-2">50+</div>
+                    <div class="text-sm text-gray-400">Top Universities</div>
+                </div>
+                <div class="fade-in-up">
+                    <div class="text-3xl font-orbitron font-bold text-electric-cyan mb-2">25K+</div>
+                    <div class="text-sm text-gray-400">Active Learners</div>
+                </div>
+                <div class="fade-in-up">
+                    <div class="text-3xl font-orbitron font-bold text-neon-green mb-2">95%</div>
+                    <div class="text-sm text-gray-400">Satisfaction Rate</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="py-20 bg-gradient-to-b from-charcoal to-space-blue">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row gap-8">
+                <!-- Filters Sidebar -->
+                <div class="lg:w-1/4">
+                    <div class="glass rounded-2xl p-6 sticky top-24">
+                        <h3 class="font-orbitron font-bold text-xl mb-6 text-electric-cyan">Filter Courses</h3>
+                        
+                        <!-- Category Filter -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-semibold mb-3 text-gray-300">Category</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="category-filter mr-3 text-electric-cyan" value="fundamentals" checked>
+                                    <span class="text-sm">AI Fundamentals</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="category-filter mr-3 text-electric-cyan" value="machine-learning" checked>
+                                    <span class="text-sm">Machine Learning</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="category-filter mr-3 text-electric-cyan" value="deep-learning" checked>
+                                    <span class="text-sm">Deep Learning</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="category-filter mr-3 text-electric-cyan" value="nlp" checked>
+                                    <span class="text-sm">Natural Language Processing</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="category-filter mr-3 text-electric-cyan" value="computer-vision" checked>
+                                    <span class="text-sm">Computer Vision</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="category-filter mr-3 text-electric-cyan" value="ethics" checked>
+                                    <span class="text-sm">AI Ethics</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Difficulty Filter -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-semibold mb-3 text-gray-300">Difficulty Level</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="difficulty-filter mr-3 text-electric-cyan" value="beginner" checked>
+                                    <span class="text-sm">Beginner</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="difficulty-filter mr-3 text-electric-cyan" value="intermediate" checked>
+                                    <span class="text-sm">Intermediate</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="difficulty-filter mr-3 text-electric-cyan" value="advanced" checked>
+                                    <span class="text-sm">Advanced</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Duration Filter -->
+                        <div class="mb-6">
+                            <label class="block text-sm font-semibold mb-3 text-gray-300">Duration</label>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="duration-filter mr-3 text-electric-cyan" value="short" checked>
+                                    <span class="text-sm">1-4 weeks</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="duration-filter mr-3 text-electric-cyan" value="medium" checked>
+                                    <span class="text-sm">5-8 weeks</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="duration-filter mr-3 text-electric-cyan" value="long" checked>
+                                    <span class="text-sm">9+ weeks</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Clear Filters -->
+                        <button id="clearCourseFilters" class="w-full py-2 px-4 border border-electric-cyan text-electric-cyan rounded-lg hover:bg-electric-cyan hover:text-space-blue transition-all text-sm font-medium">
+                            Clear All Filters
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Courses Grid -->
+                <div class="lg:w-3/4">
+                    <!-- Sort Options -->
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+                        <div class="flex items-center space-x-4">
+                            <span class="text-sm text-gray-300">Sort by:</span>
+                            <select id="sortSelect" class="bg-white bg-opacity-10 border border-white border-opacity-20 rounded-lg px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-electric-cyan">
+                                <option value="popularity">Popularity</option>
+                                <option value="rating">Rating</option>
+                                <option value="duration">Duration</option>
+                                <option value="difficulty">Difficulty</option>
+                            </select>
+                        </div>
+                        
+                        <div class="text-sm text-gray-400">
+                            <span id="courseCount">25</span> courses found
+                        </div>
+                    </div>
+                    
+                    <!-- Courses Grid -->
+                    <div id="coursesGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
+                        <!-- Courses will be dynamically loaded here -->
+                    </div>
+                    
+                    <!-- Load More Button -->
+                    <div class="text-center">
+                        <button id="loadMoreCourses" class="px-8 py-4 border-2 border-electric-cyan text-electric-cyan rounded-full font-bold hover:bg-electric-cyan hover:text-space-blue transition-all">
+                            Load More Courses
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Learning Paths -->
+    <section class="py-20 bg-charcoal">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 fade-in-up">
+                <h2 class="font-orbitron font-bold text-4xl md:text-5xl mb-6 neon-text">
+                    Learning Paths
+                </h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                    Structured learning journeys designed by AI experts to take you from beginner to advanced.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="glass rounded-2xl p-6 hover:shadow-2xl transition-all duration-300 fade-in-up">
+                    <div class="w-16 h-16 bg-gradient-to-r from-electric-cyan to-neon-green rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-space-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                        </svg>
+                    </div>
+                    
+                    <h3 class="font-orbitron font-bold text-xl mb-4 text-white">AI Developer Path</h3>
+                    <p class="text-gray-300 mb-6">
+                        Master the fundamentals of AI development, from basic concepts to building production-ready applications.
+                    </p>
+                    
+                    <div class="space-y-2 mb-6">
+                        <div class="flex items-center text-sm text-gray-400">
+                            <svg class="w-4 h-4 mr-2 text-neon-green" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            6 Courses • 24 Weeks
+                        </div>
+                        <div class="flex items-center text-sm text-gray-400">
+                            <svg class="w-4 h-4 mr-2 text-neon-green" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            Beginner to Advanced
+                        </div>
+                        <div class="flex items-center text-sm text-gray-400">
+                            <svg class="w-4 h-4 mr-2 text-neon-green" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            Certificate Included
+                        </div>
+                    </div>
+                    
+                    <button class="w-full py-3 bg-gradient-to-r from-electric-cyan to-neon-green text-space-blue rounded-lg font-bold hover:shadow-lg transition-all">
+                        Start Path
+                    </button>
+                </div>
+                
+                <div class="glass rounded-2xl p-6 hover:shadow-2xl transition-all duration-300 fade-in-up">
+                    <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                    </div>
+                    
+                    <h3 class="font-orbitron font-bold text-xl mb-4 text-white">Data Scientist Path</h3>
+                    <p class="text-gray-300 mb-6">
+                        Learn data science fundamentals, machine learning algorithms, and advanced analytics techniques.
+                    </p>
+                    
+                    <div class="space-y-2 mb-6">
+                        <div class="flex items-center text-sm text-gray-400">
+                            <svg class="w-4 h-4 mr-2 text-neon-green" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            8 Courses • 32 Weeks
+                        </div>
+                        <div class="flex items-center text-sm text-gray-400">
+                            <svg class="w-4 h-4 mr-2 text-neon-green" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            Intermediate to Advanced
+                        </div>
+                        <div class="flex items-center text-sm text-gray-400">
+                            <svg class="w-4 h-4 mr-2 text-neon-green" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            Certificate Included
+                        </div>
+                    </div>
+                    
+                    <button class="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-bold hover:shadow-lg transition-all">
+                        Start Path
+                    </button>
+                </div>
+                
+                <div class="glass rounded-2xl p-6 hover:shadow-2xl transition-all duration-300 fade-in-up">
+                    <div class="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-2xl flex items-center justify-center mb-6">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                    </div>
+                    
+                    <h3 class="font-orbitron font-bold text-xl mb-4 text-white">AI Researcher Path</h3>
+                    <p class="text-gray-300 mb-6">
+                        Dive deep into cutting-edge AI research, advanced algorithms, and contribute to the future of artificial intelligence.
+                    </p>
+                    
+                    <div class="space-y-2 mb-6">
+                        <div class="flex items-center text-sm text-gray-400">
+                            <svg class="w-4 h-4 mr-2 text-neon-green" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            10 Courses • 40 Weeks
+                        </div>
+                        <div class="flex items-center text-sm text-gray-400">
+                            <svg class="w-4 h-4 mr-2 text-neon-green" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            Advanced Level
+                        </div>
+                        <div class="flex items-center text-sm text-gray-400">
+                            <svg class="w-4 h-4 mr-2 text-neon-green" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                            Research Focus
+                        </div>
+                    </div>
+                    
+                    <button class="w-full py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg font-bold hover:shadow-lg transition-all">
+                        Start Path
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-charcoal py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="flex items-center justify-center space-x-3 mb-6">
+                    <div class="w-10 h-10 bg-gradient-to-r from-electric-cyan to-neon-green rounded-lg flex items-center justify-center">
+                        <span class="font-orbitron font-bold text-space-blue">NL</span>
+                    </div>
+                    <span class="font-orbitron font-bold text-2xl neon-text">NanoLancer</span>
+                </div>
+                
+                <p class="text-gray-400 mb-6 max-w-2xl mx-auto">
+                    Empowering the next generation of AI innovators with free tools, courses, and resources.
+                </p>
+                
+                <div class="flex justify-center space-x-6 mb-8">
+                    <a href="#" class="text-gray-400 hover:text-electric-cyan transition-colors">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-electric-cyan transition-colors">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-electric-cyan transition-colors">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        </svg>
+                    </a>
+                </div>
+                
+                <p class="text-sm text-gray-500">
+                    © 2024 NanoLancer. All rights reserved. Built with passion for the AI community.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Course Detail Modal -->
+    <div id="courseModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="glass rounded-2xl p-8 max-w-4xl w-full mx-4 max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-start mb-6">
+                <h2 id="modalTitle" class="font-orbitron font-bold text-3xl text-white"></h2>
+                <button id="closeModal" class="text-gray-400 hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                    <img id="modalImage" src="" alt="" class="w-full aspect-video object-cover rounded-lg mb-6">
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span id="modalProvider" class="text-electric-cyan font-semibold"></span>
+                            <div class="flex items-center space-x-1">
+                                <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                </svg>
+                                <span id="modalRating" class="text-white font-semibold"></span>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center space-x-4 text-sm text-gray-300">
+                            <span id="modalDifficulty" class="px-3 py-1 bg-neon-green text-space-blue rounded-full font-semibold"></span>
+                            <span id="modalDuration"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="font-orbitron font-bold text-xl mb-4 text-electric-cyan">Course Overview</h3>
+                    <p id="modalDescription" class="text-gray-300 mb-6 leading-relaxed"></p>
+                    
+                    <h3 class="font-orbitron font-bold text-xl mb-4 text-electric-cyan">What You'll Learn</h3>
+                    <ul id="modalLearning" class="space-y-2 mb-6">
+                        <!-- Learning objectives will be populated here -->
+                    </ul>
+                    
+                    <div class="flex space-x-4">
+                        <button id="enrollBtn" class="flex-1 py-3 bg-gradient-to-r from-electric-cyan to-neon-green text-space-blue rounded-lg font-bold hover:shadow-lg transition-all">
+                            Enroll Free
+                        </button>
+                        <button class="px-6 py-3 border border-electric-cyan text-electric-cyan rounded-lg font-semibold hover:bg-electric-cyan hover:text-space-blue transition-all">
+                            Save
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="main.js"></script>
+    <script>
+        // Course-specific functionality
+        class CourseManager {
+            constructor() {
+                this.courses = [
+                    {
+                        id: 1,
+                        title: "AI Fundamentals",
+                        provider: "Stanford University",
+                        description: "Comprehensive introduction to artificial intelligence concepts, algorithms, and applications. This course covers the fundamental principles of AI, including search algorithms, knowledge representation, machine learning basics, and ethical considerations in AI development.",
+                        difficulty: "Beginner",
+                        duration: "8 weeks",
+                        category: "fundamentals",
+                        free: true,
+                        rating: 4.8,
+                        students: 15420,
+                        thumbnail: "resources/course-images/ai-fundamentals.png",
+                        enrollLink: "https://coursera.org/ai-fundamentals",
+                        learning: [
+                            "Understand core AI concepts and terminology",
+                            "Implement basic search algorithms",
+                            "Explore machine learning fundamentals",
+                            "Learn about AI ethics and responsible AI",
+                            "Build your first AI application"
+                        ]
+                    },
+                    {
+                        id: 2,
+                        title: "Machine Learning Specialization",
+                        provider: "DeepLearning.AI",
+                        description: "Master machine learning fundamentals through hands-on projects and real-world applications. Learn supervised and unsupervised learning, neural networks, and best practices for ML development.",
+                        difficulty: "Intermediate",
+                        duration: "12 weeks",
+                        category: "machine-learning",
+                        free: true,
+                        rating: 4.9,
+                        students: 28350,
+                        thumbnail: "resources/course-images/machine-learning.png",
+                        enrollLink: "https://coursera.org/ml-specialization",
+                        learning: [
+                            "Master supervised learning algorithms",
+                            "Understand neural network architectures",
+                            "Implement unsupervised learning techniques",
+                            "Build and deploy ML models",
+                            "Apply ML to real-world problems"
+                        ]
+                    },
+                    {
+                        id: 3,
+                        title: "Deep Learning with PyTorch",
+                        provider: "Facebook AI",
+                        description: "Build and train deep neural networks using PyTorch framework with practical examples. Learn convolutional networks, RNNs, LSTMs, and advanced deep learning techniques.",
+                        difficulty: "Advanced",
+                        duration: "10 weeks",
+                        category: "deep-learning",
+                        free: true,
+                        rating: 4.7,
+                        students: 12300,
+                        thumbnail: "resources/course-images/deep-learning.png",
+                        enrollLink: "https://pytorch.org/tutorials/",
+                        learning: [
+                            "Master PyTorch framework",
+                            "Build convolutional neural networks",
+                            "Implement RNNs and LSTMs",
+                            "Train generative models",
+                            "Deploy deep learning models"
+                        ]
+                    },
+                    {
+                        id: 4,
+                        title: "Natural Language Processing",
+                        provider: "Google AI",
+                        description: "Learn to process and understand human language using modern NLP techniques and models. Cover tokenization, sentiment analysis, and transformer models.",
+                        difficulty: "Intermediate",
+                        duration: "6 weeks",
+                        category: "nlp",
+                        free: true,
+                        rating: 4.6,
+                        students: 18900,
+                        thumbnail: "resources/course-images/ai-fundamentals.png",
+                        enrollLink: "https://ai.google/education/",
+                        learning: [
+                            "Understand NLP fundamentals",
+                            "Implement text preprocessing",
+                            "Build sentiment analysis models",
+                            "Work with transformer architectures",
+                            "Create chatbots and language models"
+                        ]
+                    },
+                    {
+                        id: 5,
+                        title: "Computer Vision Basics",
+                        provider: "University of Buffalo",
+                        description: "Introduction to computer vision concepts including image processing, object detection, and convolutional neural networks for visual recognition tasks.",
+                        difficulty: "Beginner",
+                        duration: "4 weeks",
+                        category: "computer-vision",
+                        free: true,
+                        rating: 4.5,
+                        students: 22100,
+                        thumbnail: "resources/course-images/machine-learning.png",
+                        enrollLink: "https://coursera.org/computer-vision",
+                        learning: [
+                            "Understand image processing basics",
+                            "Implement edge detection algorithms",
+                            "Build object detection systems",
+                            "Work with CNN architectures",
+                            "Create image classification models"
+                        ]
+                    },
+                    {
+                        id: 6,
+                        title: "AI Ethics and Society",
+                        provider: "MIT",
+                        description: "Explore the ethical implications of AI technology, bias in algorithms, privacy concerns, and the societal impact of artificial intelligence.",
+                        difficulty: "Intermediate",
+                        duration: "5 weeks",
+                        category: "ethics",
+                        free: true,
+                        rating: 4.8,
+                        students: 9800,
+                        thumbnail: "resources/course-images/ai-fundamentals.png",
+                        enrollLink: "https://mit.edu/ai-ethics",
+                        learning: [
+                            "Understand AI bias and fairness",
+                            "Explore privacy in AI systems",
+                            "Learn about AI governance",
+                            "Analyze societal AI impact",
+                            "Develop ethical AI frameworks"
+                        ]
+                    }
+                ];
+                
+                this.filteredCourses = [...this.courses];
+                this.init();
+            }
+            
+            init() {
+                this.renderCourses();
+                this.setupEventListeners();
+                this.setupScrollAnimations();
+            }
+            
+            setupEventListeners() {
+                // Search functionality
+                document.getElementById('coursesSearch')?.addEventListener('input', (e) => {
+                    this.handleSearch(e.target.value);
+                });
+                
+                // Filter functionality
+                document.querySelectorAll('.category-filter, .difficulty-filter, .duration-filter').forEach(filter => {
+                    filter.addEventListener('change', () => this.applyFilters());
+                });
+                
+                document.getElementById('clearCourseFilters')?.addEventListener('click', () => {
+                    this.clearAllFilters();
+                });
+                
+                // Sort functionality
+                document.getElementById('sortSelect')?.addEventListener('change', (e) => {
+                    this.sortCourses(e.target.value);
+                });
+                
+                // Modal functionality
+                document.getElementById('closeModal')?.addEventListener('click', () => {
+                    this.closeModal();
+                });
+                
+                document.getElementById('courseModal')?.addEventListener('click', (e) => {
+                    if (e.target.id === 'courseModal') {
+                        this.closeModal();
+                    }
+                });
+            }
+            
+            setupScrollAnimations() {
+                const observerOptions = {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -50px 0px'
+                };
+                
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                        }
+                    });
+                }, observerOptions);
+                
+                document.querySelectorAll('.fade-in-up').forEach(el => {
+                    observer.observe(el);
+                });
+            }
+            
+            renderCourses() {
+                const coursesGrid = document.getElementById('coursesGrid');
+                if (!coursesGrid) return;
+                
+                coursesGrid.innerHTML = this.filteredCourses.map(course => this.createCourseCard(course)).join('');
+                
+                // Add click listeners to cards
+                document.querySelectorAll('.course-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        const courseId = parseInt(card.dataset.courseId);
+                        this.showCourseModal(courseId);
+                    });
+                });
+                
+                // Update course count
+                document.getElementById('courseCount').textContent = this.filteredCourses.length;
+            }
+            
+            createCourseCard(course) {
+                const difficultyColor = {
+                    'Beginner': 'bg-neon-green text-space-blue',
+                    'Intermediate': 'bg-electric-cyan text-space-blue',
+                    'Advanced': 'bg-purple-500 text-white'
+                };
+                
+                return `
+                    <div class="course-card card-3d glass rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer" data-course-id="${course.id}">
+                        <div class="aspect-video overflow-hidden">
+                            <img src="${course.thumbnail}" alt="${course.title}" class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+                        </div>
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="px-3 py-1 ${difficultyColor[course.difficulty]} text-xs font-semibold rounded-full">
+                                    ${course.difficulty}
+                                </span>
+                                <div class="flex items-center space-x-1">
+                                    <svg class="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                    </svg>
+                                    <span class="text-sm text-gray-300">${course.rating}</span>
+                                </div>
+                            </div>
+                            
+                            <h3 class="font-orbitron font-bold text-xl mb-2 text-white hover:text-electric-cyan transition-colors">
+                                ${course.title}
+                            </h3>
+                            
+                            <p class="text-gray-400 text-sm mb-4">${course.provider}</p>
+                            
+                            <p class="text-gray-300 text-sm mb-4 line-clamp-3">
+                                ${course.description.substring(0, 120)}...
+                            </p>
+                            
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-400">${course.duration}</span>
+                                <button class="px-4 py-2 bg-gradient-to-r from-electric-cyan to-neon-green text-space-blue rounded-lg text-sm font-semibold hover:shadow-lg transition-all">
+                                    Enroll Free
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            showCourseModal(courseId) {
+                const course = this.courses.find(c => c.id === courseId);
+                if (!course) return;
+                
+                // Populate modal content
+                document.getElementById('modalTitle').textContent = course.title;
+                document.getElementById('modalProvider').textContent = course.provider;
+                document.getElementById('modalRating').textContent = course.rating;
+                document.getElementById('modalDifficulty').textContent = course.difficulty;
+                document.getElementById('modalDuration').textContent = course.duration;
+                document.getElementById('modalDescription').textContent = course.description;
+                document.getElementById('modalImage').src = course.thumbnail;
+                document.getElementById('modalImage').alt = course.title;
+                
+                // Populate learning objectives
+                const learningList = document.getElementById('modalLearning');
+                learningList.innerHTML = course.learning.map(item => `
+                    <li class="flex items-start space-x-3">
+                        <svg class="w-5 h-5 text-neon-green mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="text-gray-300">${item}</span>
+                    </li>
+                `).join('');
+                
+                // Show modal
+                document.getElementById('courseModal').classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+            
+            closeModal() {
+                document.getElementById('courseModal').classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
+            
+            handleSearch(query) {
+                if (!query.trim()) {
+                    this.filteredCourses = [...this.courses];
+                } else {
+                    const searchTerm = query.toLowerCase();
+                    this.filteredCourses = this.courses.filter(course => 
+                        course.title.toLowerCase().includes(searchTerm) ||
+                        course.provider.toLowerCase().includes(searchTerm) ||
+                        course.description.toLowerCase().includes(searchTerm)
+                    );
+                }
+                
+                this.renderCourses();
+            }
+            
+            applyFilters() {
+                const categoryFilters = Array.from(document.querySelectorAll('.category-filter:checked'))
+                    .map(cb => cb.value);
+                const difficultyFilters = Array.from(document.querySelectorAll('.difficulty-filter:checked'))
+                    .map(cb => cb.value);
+                
+                this.filteredCourses = this.courses.filter(course => {
+                    const categoryMatch = categoryFilters.length === 0 || categoryFilters.includes(course.category);
+                    const difficultyMatch = difficultyFilters.length === 0 || difficultyFilters.includes(course.difficulty.toLowerCase());
+                    return categoryMatch && difficultyMatch;
+                });
+                
+                this.renderCourses();
+            }
+            
+            clearAllFilters() {
+                document.querySelectorAll('.category-filter, .difficulty-filter, .duration-filter').forEach(cb => {
+                    cb.checked = true;
+                });
+                
+                document.getElementById('coursesSearch').value = '';
+                this.filteredCourses = [...this.courses];
+                this.renderCourses();
+            }
+            
+            sortCourses(sortBy) {
+                switch (sortBy) {
+                    case 'rating':
+                        this.filteredCourses.sort((a, b) => b.rating - a.rating);
+                        break;
+                    case 'duration':
+                        this.filteredCourses.sort((a, b) => {
+                            const durationOrder = { '4 weeks': 1, '5 weeks': 2, '6 weeks': 3, '8 weeks': 4, '10 weeks': 5, '12 weeks': 6 };
+                            return durationOrder[a.duration] - durationOrder[b.duration];
+                        });
+                        break;
+                    case 'difficulty':
+                        const difficultyOrder = { 'Beginner': 1, 'Intermediate': 2, 'Advanced': 3 };
+                        this.filteredCourses.sort((a, b) => difficultyOrder[a.difficulty] - difficultyOrder[b.difficulty]);
+                        break;
+                    default: // popularity
+                        this.filteredCourses.sort((a, b) => b.students - a.students);
+                }
+                
+                this.renderCourses();
+            }
+        }
+        
+        // Initialize course manager when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new CourseManager();
+        });
+    </script>
+    <script src="database.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
